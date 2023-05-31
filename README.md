@@ -9,4 +9,4 @@ To run this code locally:
 
 `rustc main.rs`
 
-`./main # or .\main.exe on Windows`
+`./main`  or `.\main.exe` on Windows
