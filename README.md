@@ -8,3 +8,5 @@ To run this code locally:
 `cd Student-Grading-System/src`
 
 `rustc main.rs`
+
+`./main # or .\main.exe on Windows`
