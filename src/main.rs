@@ -2,14 +2,12 @@ use std::collections::HashMap;
 use std::io;
 use std::iter::Sum;
 
-// Structure to represent a student
 struct Student {
     name: String,
     grades: HashMap<String, f32>,
 }
 
 impl Student {
-    // Calculate the average grade for a student
     fn calculate_average_grade(&self) -> f32 {
         let total: f32 = self.grades.values().sum();
         let count = self.grades.len() as f32;
@@ -17,19 +15,16 @@ impl Student {
     }
 }
 
-// Structure to represent a subject
 struct Subject {
     name: String,
 }
 
-// Structure to represent the grading system
 struct GradingSystem {
     students: HashMap<String, Student>,
     subjects: HashMap<String, Subject>,
 }
 
 impl GradingSystem {
-    // Register a new student
     fn register_student(&mut self, name: String) {
         let student = Student {
             name: name.clone(),
@@ -38,20 +33,17 @@ impl GradingSystem {
         self.students.insert(name, student);
     }
 
-    // Add a new subject
     fn add_subject(&mut self, name: String) {
         let subject = Subject { name: name.clone() };
         self.subjects.insert(name, subject);
     }
 
-    // Add a grade for a student and subject
     fn add_grade(&mut self, student_name: &str, subject_name: &str, grade: f32) {
         if let Some(student) = self.students.get_mut(student_name) {
             student.grades.insert(subject_name.to_string(), grade);
         }
     }
 
-    // Generate a grade report for a student
     fn generate_grade_report(&self, student_name: &str) -> Option<String> {
         if let Some(student) = self.students.get(student_name) {
             let mut report = format!("Grade Report for {}\n", student.name);
@@ -64,7 +56,6 @@ impl GradingSystem {
         }
     }
 
-    // Calculate the average grade for a subject
     fn calculate_subject_average_grade(&self, subject_name: &str) -> Option<f32> {
         let mut total = 0.0;
         let mut count = 0;
@@ -81,7 +72,6 @@ impl GradingSystem {
         }
     }
 
-    // Calculate the average grade for all subjects
     fn calculate_overall_average_grade(&self) -> Option<f32> {
         let mut total = 0.0;
         let mut count = 0;
@@ -96,7 +86,6 @@ impl GradingSystem {
         }
     }
 
-    // Sort and display student records
     fn display_student_records(&self) {
         let mut students: Vec<_> = self.students.values().collect();
         students.sort_by(|a, b| a.name.cmp(&b.name));
@@ -112,7 +101,6 @@ impl GradingSystem {
         }
     }
 
-    // Sort and display subject grades
     fn display_subject_grades(&self) {
         let mut subjects: Vec<_> = self.subjects.values().collect();
         subjects.sort_by(|a, b| a.name.cmp(&b.name));
@@ -129,7 +117,6 @@ impl GradingSystem {
         }
     }
 
-    // Perform statistical analysis on subject grades
     fn perform_statistical_analysis(&self, subject_name: &str) {
         let mut grades: Vec<_> = self
             .students
