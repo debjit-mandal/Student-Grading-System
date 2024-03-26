@@ -137,8 +137,7 @@ impl GradingSystem {
         grades.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         let count = grades.len();
-        let average = grades.iter().sum::<f32>() / count as f32;
-        let median = if count % 2 == 0 {
+        let average = grades.iter().map(|&grade| grade).sum::<f32>() / count as f32;        let median = if count % 2 == 0 {
             (grades[count / 2 - 1] + grades[count / 2]) / 2.0
         } else {
             *grades[count / 2]
