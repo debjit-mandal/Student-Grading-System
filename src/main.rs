@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::io;
+use std::iter::Sum;
 
 // Structure to represent a student
 struct Student {
@@ -69,7 +70,7 @@ impl GradingSystem {
         let mut count = 0;
         for student in self.students.values() {
             if let Some(grade) = student.grades.get(subject_name) {
-                total += grade;
+                total += *grade;
                 count += 1;
             }
         }
@@ -110,6 +111,7 @@ impl GradingSystem {
             println!("-------------------------");
         }
     }
+
     // Sort and display subject grades
     fn display_subject_grades(&self) {
         let mut subjects: Vec<_> = self.subjects.values().collect();
@@ -137,7 +139,8 @@ impl GradingSystem {
         grades.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         let count = grades.len();
-        let average = grades.iter().map(|&grade| grade).sum::<f32>() / count as f32;        let median = if count % 2 == 0 {
+        let average = grades.iter().map(|&grade| grade).sum::<f32>() / count as f32;
+        let median = if count % 2 == 0 {
             (grades[count / 2 - 1] + grades[count / 2]) / 2.0
         } else {
             *grades[count / 2]
@@ -213,17 +216,19 @@ fn main() {
                     .expect("Failed to read input");
                 println!("Enter grade:");
                 let mut grade = String::new();
-                io::stdin()
-                    .read_line(&mut grade)
-                    .expect("Failed to read input");
+                io::stdin().read_line(&mut grade).expect("Failed to read input");
                 let grade: f32 = match grade.trim().parse() {
                     Ok(num) => num,
                     Err(_) => {
-                        println!("Invalid input!");
+                        println!("Invalid grade!");
                         continue;
                     }
                 };
-                grading_system.add_grade(&student_name.trim(), &subject_name.trim(), grade);
+                grading_system.add_grade(
+                    student_name.trim(),
+                    subject_name.trim(),
+                    grade,
+                );
             }
             4 => {
                 println!("Enter student name:");
@@ -231,7 +236,7 @@ fn main() {
                 io::stdin()
                     .read_line(&mut student_name)
                     .expect("Failed to read input");
-                if let Some(report) = grading_system.generate_grade_report(&student_name.trim()) {
+                if let Some(report) = grading_system.generate_grade_report(student_name.trim()) {
                     println!("{}", report);
                 } else {
                     println!("Student not found!");
@@ -243,23 +248,17 @@ fn main() {
                 io::stdin()
                     .read_line(&mut subject_name)
                     .expect("Failed to read input");
-                if let Some(average) =
-                    grading_system.calculate_subject_average_grade(&subject_name.trim())
-                {
-                    println!(
-                        "Average grade for subject {}: {}",
-                        subject_name.trim(),
-                        average
-                    );
+                if let Some(average) = grading_system.calculate_subject_average_grade(subject_name.trim()) {
+                    println!("Average grade for subject '{}': {:.2}", subject_name.trim(), average);
                 } else {
-                    println!("No grades found for the subject!");
+                    println!("No grades available for subject '{}'", subject_name.trim());
                 }
             }
             6 => {
                 if let Some(average) = grading_system.calculate_overall_average_grade() {
-                    println!("Overall average grade: {}", average);
+                    println!("Overall average grade: {:.2}", average);
                 } else {
-                    println!("No students found!");
+                    println!("No grades available");
                 }
             }
             7 => grading_system.display_student_records(),
@@ -270,13 +269,11 @@ fn main() {
                 io::stdin()
                     .read_line(&mut subject_name)
                     .expect("Failed to read input");
-                grading_system.perform_statistical_analysis(&subject_name.trim());
+                grading_system.perform_statistical_analysis(subject_name.trim());
             }
             10 => break,
-            _ => {
-                println!("Invalid input!");
-                continue;
-            }
+            _ => println!("Invalid choice!"),
         }
+        println!();
     }
 }
