@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::io;
-use std::iter::Sum;
 
 struct Student {
     name: String,
